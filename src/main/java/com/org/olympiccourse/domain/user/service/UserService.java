@@ -1,15 +1,16 @@
 package com.org.olympiccourse.domain.user.service;
 
+import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.entity.Role;
 import com.org.olympiccourse.domain.user.entity.Status;
 import com.org.olympiccourse.domain.user.entity.User;
-import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.repository.UserRepository;
-import com.org.olympiccourse.domain.user.request.CheckDuplicationDto;
+import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
 import com.org.olympiccourse.domain.user.request.Type;
-import com.org.olympiccourse.domain.user.request.UserJoinDto;
+import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.global.response.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +20,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void join(UserJoinDto userJoinDto){
+    public void join(UserJoinRequestDto userJoinRequestDto){
 
-        validateEmail(userJoinDto.getEmail());
-        validateNickname(userJoinDto.getNickname());
+        validateEmail(userJoinRequestDto.getEmail());
+        validateNickname(userJoinRequestDto.getNickname());
 
         User saveUser = User.builder()
-            .email(userJoinDto.getEmail())
-            .nickname(userJoinDto.getNickname())
-            .password(userJoinDto.getPassword())
-            .language(userJoinDto.getLanguage())
+            .email(userJoinRequestDto.getEmail())
+            .nickname(userJoinRequestDto.getNickname())
+            .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
+            .language(userJoinRequestDto.getLanguage())
             .role(Role.ROLE_USER)
             .status(Status.ACTIVITY)
             .build();
@@ -50,11 +52,11 @@ public class UserService {
         }
     }
 
-    public void checkDuplication(CheckDuplicationDto checkDuplicationDto) {
-        if(checkDuplicationDto.getType() == Type.EMAIL){
-            validateEmail(checkDuplicationDto.getContent());
-        }else if(checkDuplicationDto.getType() == Type.NICKNAME){
-            validateNickname(checkDuplicationDto.getContent());
+    public void checkDuplication(CheckDuplicationRequestDto checkDuplicationRequestDto) {
+        if(checkDuplicationRequestDto.getType() == Type.EMAIL){
+            validateEmail(checkDuplicationRequestDto.getContent());
+        }else if(checkDuplicationRequestDto.getType() == Type.NICKNAME){
+            validateNickname(checkDuplicationRequestDto.getContent());
         }
     }
 }

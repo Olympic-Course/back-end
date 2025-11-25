@@ -47,4 +47,8 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    public void withdraw (){
+        this.status = Status.WITHDRAW;
+    }
 }

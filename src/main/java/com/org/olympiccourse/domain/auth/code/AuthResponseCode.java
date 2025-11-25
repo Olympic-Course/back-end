@@ -11,6 +11,7 @@ public enum AuthResponseCode implements ResponseCode {
 
     // 성공
     LOGIN_SUCCESS(HttpStatus.OK, "AUTH_LOGIN_SUCCESS"),
+    LOGOUT_SUCCESS(HttpStatus.OK, "AUTH_LOGOUT_SUCCESS"),
 
     // 실패
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH_UNAUTHORIZED");

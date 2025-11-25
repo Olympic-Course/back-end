@@ -1,5 +1,6 @@
 package com.org.olympiccourse.domain.user.entity;
 
+import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
 import com.org.olympiccourse.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class User extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +50,19 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
-    public void withdraw (){
+    public void withdraw() {
         this.status = Status.WITHDRAW;
+    }
+
+    public void update(UserUpdateRequestDto userUpdateRequestDto) {
+        String newNickname = userUpdateRequestDto.getNickname();
+        if (newNickname != null && !newNickname.isEmpty()) {
+            this.nickname = newNickname;
+        }
+
+        Language newLanguage = userUpdateRequestDto.getLanguage();
+        if (newLanguage != null) {
+            this.language = newLanguage;
+        }
     }
 }

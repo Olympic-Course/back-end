@@ -3,8 +3,12 @@ package com.org.olympiccourse.domain.user.response;
 import com.org.olympiccourse.domain.user.entity.Language;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.global.security.basic.CustomUserDetails;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
+@AllArgsConstructor
+@Builder
 @Getter
 public class BasicUserInfoResponse {
 

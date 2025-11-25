@@ -59,4 +59,9 @@ public class UserService {
             validateNickname(checkDuplicationRequestDto.getContent());
         }
     }
+
+    public void withdraw(User user) {
+        User findUser = userRepository.findById(user.getId()).orElseThrow(()->new CustomException(UserResponseCode.USER_NOT_FOUND));
+        findUser.withdraw();
+    }
 }

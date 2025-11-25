@@ -1,6 +1,6 @@
 package com.org.olympiccourse.global.config;
 
-import com.org.olympiccourse.global.annotation.LoginMemberArgumentResolver;
+import com.org.olympiccourse.global.annotation.LoginUserArgumentResolver;
 import java.util.List;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,14 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
+    private final LoginUserArgumentResolver loginUserArgumentResolver;
 
-    public WebConfig(LoginMemberArgumentResolver loginMemberArgumentResolver) {
-        this.loginMemberArgumentResolver = loginMemberArgumentResolver;
+    public WebConfig(LoginUserArgumentResolver loginUserArgumentResolver) {
+        this.loginUserArgumentResolver = loginUserArgumentResolver;
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(loginMemberArgumentResolver);
+        resolvers.add(loginUserArgumentResolver);
     }
 }

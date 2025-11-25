@@ -1,14 +1,17 @@
 package com.org.olympiccourse.domain.user.controller;
 
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
+import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.service.UserService;
+import com.org.olympiccourse.global.annotation.LoginUser;
 import com.org.olympiccourse.global.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,12 @@ public class UserController {
         userService.checkDuplication(checkDuplicationRequestDto);
         return ResponseEntity.ok(
             ApiResponse.successWithoutData(UserResponseCode.DUPLICATION_CHECK_PASSED));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<ApiResponse<Object>> withdraw(@LoginUser User user) {
+        userService.withdraw(user);
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(ApiResponse.successWithoutData(UserResponseCode.USER_DELETE_SUCCESS));
     }
 }

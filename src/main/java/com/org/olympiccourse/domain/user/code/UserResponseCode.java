@@ -12,6 +12,7 @@ public enum UserResponseCode implements ResponseCode {
     // 성공
     USER_CREATED(HttpStatus.CREATED, "USER_CREATED"),
     DUPLICATION_CHECK_PASSED(HttpStatus.OK, "USER_DUPLICATION_CHECK_PASSED"),
+    USER_DELETE_SUCCESS(HttpStatus.OK, "USER_DELETE_SUCCESS"),
 
     // 실패
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"),

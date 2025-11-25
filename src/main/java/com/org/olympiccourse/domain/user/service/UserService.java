@@ -82,4 +82,17 @@ public class UserService {
             .language(updateUser.getLanguage())
             .build();
     }
+
+    public BasicUserInfoResponse getUserInfo(User user) {
+
+        User findUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new CustomException(UserResponseCode.USER_NOT_FOUND));
+
+        return BasicUserInfoResponse.builder()
+            .userId(findUser.getId())
+            .email(findUser.getEmail())
+            .nickname(findUser.getNickname())
+            .language(findUser.getLanguage())
+            .build();
+    }
 }

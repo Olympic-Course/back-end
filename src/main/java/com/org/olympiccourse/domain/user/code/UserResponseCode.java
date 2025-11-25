@@ -14,6 +14,7 @@ public enum UserResponseCode implements ResponseCode {
     DUPLICATION_CHECK_PASSED(HttpStatus.OK, "USER_DUPLICATION_CHECK_PASSED"),
     USER_DELETE_SUCCESS(HttpStatus.OK, "USER_DELETE_SUCCESS"),
     USER_UPDATE_SUCCESS(HttpStatus.OK, "USER_UPDATE_SUCCESS"),
+    USER_GET_SUCCESS(HttpStatus.OK, "USER_GET_SUCCESS"),
 
     // 실패
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND"),

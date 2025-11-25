@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum GlobalErrorCode implements ErrorCode {
+public enum GlobalErrorCode implements ResponseCode {
 
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"INTERNAL_SERVER_ERROR"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"BAD_REQUEST"),;

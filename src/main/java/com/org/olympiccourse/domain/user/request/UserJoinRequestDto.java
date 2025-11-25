@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-public class UserJoinDto {
+public class UserJoinRequestDto {
 
     @NotBlank @Email
     private String email;

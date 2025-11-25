@@ -16,15 +16,15 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
-    public static <T> ApiResponse<T> success(String code, T data) {
-        return new ApiResponse<>(true, code, data);
+    public static <T> ApiResponse<T> success(ResponseCode code, T data) {
+        return new ApiResponse<>(true, code.getCode(), data);
     }
 
-    public static <T> ApiResponse<T> successWithoutData(String code) {
-        return new ApiResponse<>(true, code, null);
+    public static <T> ApiResponse<T> successWithoutData(ResponseCode code) {
+        return new ApiResponse<>(true, code.getCode(), null);
     }
 
-    public static <T> ApiResponse<T> fail(ErrorCode errorCode) {
-        return new ApiResponse<>(false, errorCode.getCode(), null);
+    public static <T> ApiResponse<T> fail(ResponseCode code) {
+        return new ApiResponse<>(false, code.getCode(), null);
     }
 }

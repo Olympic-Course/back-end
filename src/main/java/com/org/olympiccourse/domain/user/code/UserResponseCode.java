@@ -11,6 +11,7 @@ public enum UserResponseCode implements ResponseCode {
 
     // 성공
     USER_CREATED(HttpStatus.CREATED, "USER_CREATED"),
+    USER_DUPLICATION_CHECK_PASSED(HttpStatus.OK, "USER_DUPLICATION_CHECK_PASSED"),
 
     // 실패
     EMAIL_ALREADY_EXISTS(HttpStatus.CONFLICT, "USER_EMAIL_ALREADY_EXISTS"),

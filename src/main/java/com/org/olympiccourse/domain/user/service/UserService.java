@@ -5,6 +5,8 @@ import com.org.olympiccourse.domain.user.entity.Status;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.repository.UserRepository;
+import com.org.olympiccourse.domain.user.request.CheckDuplicationDto;
+import com.org.olympiccourse.domain.user.request.Type;
 import com.org.olympiccourse.domain.user.request.UserJoinDto;
 import com.org.olympiccourse.global.response.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,8 @@ public class UserService {
 
     public void join(UserJoinDto userJoinDto){
 
-        validateEmailAndNickname(userJoinDto.getEmail(), userJoinDto.getNickname());
+        validateEmail(userJoinDto.getEmail());
+        validateNickname(userJoinDto.getNickname());
 
         User saveUser = User.builder()
             .email(userJoinDto.getEmail())
@@ -34,13 +37,24 @@ public class UserService {
         userRepository.save(saveUser);
     }
 
-    private void validateEmailAndNickname(String email, String nickname) {
-
+    private void validateEmail(String email){
         if (userRepository.existsByEmailAndStatus(email, Status.ACTIVITY)) {
             throw new CustomException(UserResponseCode.EMAIL_ALREADY_EXISTS);
-        } else if (userRepository.existsByNicknameAndStatus(nickname,
+        }
+    }
+
+    private void validateNickname(String nickname){
+        if (userRepository.existsByNicknameAndStatus(nickname,
             Status.ACTIVITY)) {
             throw new CustomException(UserResponseCode.NICKNAME_ALREADY_EXISTS);
+        }
+    }
+
+    public void checkDuplication(CheckDuplicationDto checkDuplicationDto) {
+        if(checkDuplicationDto.getType() == Type.EMAIL){
+            validateEmail(checkDuplicationDto.getContent());
+        }else if(checkDuplicationDto.getType() == Type.NICKNAME){
+            validateNickname(checkDuplicationDto.getContent());
         }
     }
 }

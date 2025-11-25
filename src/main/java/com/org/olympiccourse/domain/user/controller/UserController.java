@@ -1,6 +1,7 @@
 package com.org.olympiccourse.domain.user.controller;
 
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
+import com.org.olympiccourse.domain.user.request.CheckDuplicationDto;
 import com.org.olympiccourse.domain.user.request.UserJoinDto;
 import com.org.olympiccourse.domain.user.service.UserService;
 import com.org.olympiccourse.global.response.ApiResponse;
@@ -25,5 +26,13 @@ public class UserController {
         userService.join(userJoinDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ApiResponse.successWithoutData(UserResponseCode.USER_CREATED));
+    }
+
+    @PostMapping("/check")
+    public ResponseEntity<ApiResponse<Object>> checkDuplication(
+        @RequestBody CheckDuplicationDto checkDuplicationDto) {
+        userService.checkDuplication(checkDuplicationDto);
+        return ResponseEntity.ok(
+            ApiResponse.successWithoutData(UserResponseCode.USER_DUPLICATION_CHECK_PASSED));
     }
 }

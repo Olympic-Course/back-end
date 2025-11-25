@@ -1,8 +1,8 @@
 package com.org.olympiccourse.domain.user.controller;
 
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
-import com.org.olympiccourse.domain.user.request.CheckDuplicationDto;
-import com.org.olympiccourse.domain.user.request.UserJoinDto;
+import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
+import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.service.UserService;
 import com.org.olympiccourse.global.response.ApiResponse;
 import jakarta.validation.Valid;
@@ -22,17 +22,17 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> join(@Valid @RequestBody UserJoinDto userJoinDto) {
-        userService.join(userJoinDto);
+    public ResponseEntity<ApiResponse<Object>> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
+        userService.join(userJoinRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ApiResponse.successWithoutData(UserResponseCode.USER_CREATED));
     }
 
     @PostMapping("/check")
     public ResponseEntity<ApiResponse<Object>> checkDuplication(
-        @RequestBody CheckDuplicationDto checkDuplicationDto) {
-        userService.checkDuplication(checkDuplicationDto);
+        @RequestBody CheckDuplicationRequestDto checkDuplicationRequestDto) {
+        userService.checkDuplication(checkDuplicationRequestDto);
         return ResponseEntity.ok(
-            ApiResponse.successWithoutData(UserResponseCode.USER_DUPLICATION_CHECK_PASSED));
+            ApiResponse.successWithoutData(UserResponseCode.DUPLICATION_CHECK_PASSED));
     }
 }

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,5 +56,11 @@ public class UserController {
         @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         BasicUserInfoResponse result = userService.update(user, userUpdateRequestDto);
         return ResponseEntity.ok(ApiResponse.success(UserResponseCode.USER_UPDATE_SUCCESS, result));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<BasicUserInfoResponse>> get(@LoginUser User user) {
+        BasicUserInfoResponse result = userService.getUserInfo(user);
+        return ResponseEntity.ok(ApiResponse.success(UserResponseCode.USER_GET_SUCCESS, result));
     }
 }

@@ -4,6 +4,8 @@ import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
+import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
+import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
 import com.org.olympiccourse.domain.user.service.UserService;
 import com.org.olympiccourse.global.annotation.LoginUser;
 import com.org.olympiccourse.global.response.ApiResponse;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +28,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> join(@Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
+    public ResponseEntity<ApiResponse<Object>> join(
+        @Valid @RequestBody UserJoinRequestDto userJoinRequestDto) {
         userService.join(userJoinRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ApiResponse.successWithoutData(UserResponseCode.USER_CREATED));
@@ -44,5 +48,12 @@ public class UserController {
         userService.withdraw(user);
         return ResponseEntity.status(HttpStatus.OK)
             .body(ApiResponse.successWithoutData(UserResponseCode.USER_DELETE_SUCCESS));
+    }
+
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<BasicUserInfoResponse>> update(@LoginUser User user,
+        @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        BasicUserInfoResponse result = userService.update(user, userUpdateRequestDto);
+        return ResponseEntity.ok(ApiResponse.success(UserResponseCode.USER_UPDATE_SUCCESS, result));
     }
 }

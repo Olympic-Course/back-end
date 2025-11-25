@@ -8,6 +8,8 @@ import com.org.olympiccourse.domain.user.repository.UserRepository;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
 import com.org.olympiccourse.domain.user.request.Type;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
+import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
+import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
 import com.org.olympiccourse.global.response.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +24,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void join(UserJoinRequestDto userJoinRequestDto){
+    public void join(UserJoinRequestDto userJoinRequestDto) {
 
         validateEmail(userJoinRequestDto.getEmail());
         validateNickname(userJoinRequestDto.getNickname());
@@ -39,13 +41,13 @@ public class UserService {
         userRepository.save(saveUser);
     }
 
-    private void validateEmail(String email){
+    private void validateEmail(String email) {
         if (userRepository.existsByEmailAndStatus(email, Status.ACTIVITY)) {
             throw new CustomException(UserResponseCode.EMAIL_ALREADY_EXISTS);
         }
     }
 
-    private void validateNickname(String nickname){
+    private void validateNickname(String nickname) {
         if (userRepository.existsByNicknameAndStatus(nickname,
             Status.ACTIVITY)) {
             throw new CustomException(UserResponseCode.NICKNAME_ALREADY_EXISTS);
@@ -53,15 +55,31 @@ public class UserService {
     }
 
     public void checkDuplication(CheckDuplicationRequestDto checkDuplicationRequestDto) {
-        if(checkDuplicationRequestDto.getType() == Type.EMAIL){
+        if (checkDuplicationRequestDto.getType() == Type.EMAIL) {
             validateEmail(checkDuplicationRequestDto.getContent());
-        }else if(checkDuplicationRequestDto.getType() == Type.NICKNAME){
+        } else if (checkDuplicationRequestDto.getType() == Type.NICKNAME) {
             validateNickname(checkDuplicationRequestDto.getContent());
         }
     }
 
     public void withdraw(User user) {
-        User findUser = userRepository.findById(user.getId()).orElseThrow(()->new CustomException(UserResponseCode.USER_NOT_FOUND));
+        User findUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new CustomException(UserResponseCode.USER_NOT_FOUND));
         findUser.withdraw();
+    }
+
+    public BasicUserInfoResponse update(User user, UserUpdateRequestDto userUpdateRequestDto) {
+
+        User updateUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new CustomException(UserResponseCode.USER_NOT_FOUND));
+        validateNickname(userUpdateRequestDto.getNickname());
+        updateUser.update(userUpdateRequestDto);
+
+        return BasicUserInfoResponse.builder()
+            .userId(updateUser.getId())
+            .email(updateUser.getEmail())
+            .nickname(updateUser.getNickname())
+            .language(updateUser.getLanguage())
+            .build();
     }
 }

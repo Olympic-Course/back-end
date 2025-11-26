@@ -1,7 +1,9 @@
 package com.org.olympiccourse.domain.coursestep.entity;
 
 import com.org.olympiccourse.domain.course.entity.Course;
+import com.org.olympiccourse.domain.coursephoto.entity.CoursePhoto;
 import com.org.olympiccourse.global.BaseTimeEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,6 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +53,15 @@ public class CourseStep extends BaseTimeEntity {
     @JoinColumn(name = "course_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Course course;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "courseStep", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CoursePhoto> photos = new ArrayList<>();
+
+    public void addPhotos(List<CoursePhoto> photos) {
+        this.photos.addAll(photos);
+        for(CoursePhoto photo : photos) {
+            photo.setStep(this);
+        }
+    }
 }

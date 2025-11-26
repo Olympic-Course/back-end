@@ -34,14 +34,8 @@ public class Course extends BaseTimeEntity {
     @Column(nullable = false)
     private String titleKo;
 
-    @Column(nullable = false)
-    private String titleEn;
-
     @Column
     private String commentKo;
-
-    @Column
-    private String commentEn;
 
     @Column
     @Enumerated(EnumType.STRING)

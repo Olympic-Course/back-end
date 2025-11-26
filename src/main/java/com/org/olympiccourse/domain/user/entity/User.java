@@ -39,10 +39,6 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Language language;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @Builder.Default
     private Status status = Status.ACTIVITY;
 
@@ -58,11 +54,6 @@ public class User extends BaseTimeEntity {
         String newNickname = userUpdateRequestDto.getNickname();
         if (newNickname != null && !newNickname.isEmpty()) {
             this.nickname = newNickname;
-        }
-
-        Language newLanguage = userUpdateRequestDto.getLanguage();
-        if (newLanguage != null) {
-            this.language = newLanguage;
         }
     }
 

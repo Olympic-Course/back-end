@@ -37,6 +37,9 @@ public class CoursePhoto extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_step_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private CourseStep courseStep;
+
+    public void setStep(CourseStep courseStep) {
+        this.courseStep = courseStep;
+    }
 }

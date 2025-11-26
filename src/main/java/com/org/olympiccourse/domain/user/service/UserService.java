@@ -6,16 +6,21 @@ import com.org.olympiccourse.domain.user.entity.Status;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.repository.UserRepository;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
+import com.org.olympiccourse.domain.user.request.PasswordCheckRequestDto;
 import com.org.olympiccourse.domain.user.request.Type;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
 import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
 import com.org.olympiccourse.global.response.CustomException;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,6 +28,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void join(UserJoinRequestDto userJoinRequestDto) {
 
@@ -94,5 +100,16 @@ public class UserService {
             .nickname(findUser.getNickname())
             .language(findUser.getLanguage())
             .build();
+    }
+
+    public void checkCurPassword(User user, PasswordCheckRequestDto passwordCheckRequestDto) {
+        String prefix = "check-password:";
+
+        if (passwordEncoder.matches(passwordCheckRequestDto.getCurPassword(), user.getPassword())) {
+            redisTemplate.opsForValue()
+                .set(prefix + user.getId(), "checked", Duration.ofMinutes(5));
+        } else {
+            throw new CustomException(UserResponseCode.NOT_MATCHED_PASSWORD);
+        }
     }
 }

@@ -26,7 +26,7 @@ public class JwtService {
         jwtUtil.addBlackListExistingAccessToken(extractAccessToken,
             claimsAccessToken.getExpiration());
 
-        if (!refreshTokenRepository.findByMemberId(claimsAccessToken.getSubject()).isEmpty()) {
+        if (!refreshTokenRepository.findByUserId(claimsAccessToken.getSubject()).isEmpty()) {
             refreshTokenRepository.delete(claimsAccessToken.getSubject());
         }
     }
@@ -38,10 +38,10 @@ public class JwtService {
         Claims claimsAccessToken = jwtUtil.extractClaimsOrThrow("accessToken", extractAccessToken);
         Claims claimsRefreshToken = jwtUtil.extractClaimsOrThrow("refreshToken", refreshToken);
 
-        String memberIdFromAccessToken = claimsAccessToken.getSubject();
-        String memberIdFromRefreshToken = claimsRefreshToken.getSubject();
+        String userIdFromAccessToken = claimsAccessToken.getSubject();
+        String userIdFromRefreshToken = claimsRefreshToken.getSubject();
 
-        if (!memberIdFromRefreshToken.equals(memberIdFromAccessToken)) {
+        if (!userIdFromRefreshToken.equals(userIdFromAccessToken)) {
             throw new CustomException(GlobalErrorCode.BAD_REQUEST);
         }
 
@@ -52,8 +52,8 @@ public class JwtService {
 
         jwtUtil.validateAccessTokenExpiration(claimsAccessToken, extractAccessToken);
 
-        String existingRefreshToken = refreshTokenRepository.findByMemberId(
-            memberIdFromRefreshToken);
+        String existingRefreshToken = refreshTokenRepository.findByUserId(
+            userIdFromRefreshToken);
         if (existingRefreshToken == null) {
             throw new CustomException(AuthResponseCode.UNAUTHORIZED);
         }

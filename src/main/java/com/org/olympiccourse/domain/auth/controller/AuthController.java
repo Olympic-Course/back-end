@@ -28,7 +28,7 @@ public class AuthController {
         LoginResponseDto result = authService.login(loginRequestDto);
         return ResponseEntity.ok()
             .headers(result.getHttpHeaders())
-            .body(ApiResponse.success(AuthResponseCode.LOGIN_SUCCESS, result.getMemberInfo()));
+            .body(ApiResponse.success(AuthResponseCode.LOGIN_SUCCESS, result.getUserInfo()));
     }
 
     @PostMapping("/logout")

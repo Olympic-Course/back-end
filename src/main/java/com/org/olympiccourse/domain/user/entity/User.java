@@ -65,4 +65,8 @@ public class User extends BaseTimeEntity {
             this.language = newLanguage;
         }
     }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }

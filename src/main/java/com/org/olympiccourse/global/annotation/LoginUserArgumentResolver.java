@@ -1,8 +1,6 @@
 package com.org.olympiccourse.global.annotation;
 
-import com.org.olympiccourse.domain.auth.code.AuthResponseCode;
 import com.org.olympiccourse.domain.user.entity.User;
-import com.org.olympiccourse.global.response.CustomException;
 import com.org.olympiccourse.global.security.basic.CustomUserDetails;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -26,12 +24,16 @@ public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver 
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if(authentication == null || !authentication.isAuthenticated()||
         authentication.getPrincipal().equals("anonymousUser")) {
-            throw new CustomException(AuthResponseCode.UNAUTHORIZED);
+            return null;
         }
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (!(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            return null;
+        }
+
         return userDetails.getUser();
     }
 }

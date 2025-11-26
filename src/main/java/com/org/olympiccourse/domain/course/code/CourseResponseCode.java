@@ -10,7 +10,12 @@ import org.springframework.http.HttpStatus;
 public enum CourseResponseCode implements ResponseCode {
 
     //성공
-    COURSE_CREATED(HttpStatus.CREATED, "COURSE_CREATED");
+    COURSE_CREATED(HttpStatus.CREATED, "COURSE_CREATED"),
+    COURSE_GET_SUCCESS(HttpStatus.OK, "COURSE_GET_SUCCESS"),
+
+    //실패
+    COURSE_NOT_FOUND(HttpStatus.NOT_FOUND,  "COURSE_NOT_FOUND"),
+    COURSE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "COURSE_ACCESS_DENIED"),;
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -9,7 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -60,6 +60,8 @@ public class SecurityConfig {
                 // 로그인, 회원가입, 중복체크
                 .requestMatchers("/api/auth/login", "/api/users", "/api/users/check"
                 ).permitAll()
+                // 코스
+                .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
                 .anyRequest().authenticated()
             );
 

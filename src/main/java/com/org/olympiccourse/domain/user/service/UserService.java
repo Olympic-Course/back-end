@@ -41,7 +41,6 @@ public class UserService {
             .email(userJoinRequestDto.getEmail())
             .nickname(userJoinRequestDto.getNickname())
             .password(passwordEncoder.encode(userJoinRequestDto.getPassword()))
-            .language(userJoinRequestDto.getLanguage())
             .role(Role.ROLE_USER)
             .status(Status.ACTIVITY)
             .build();
@@ -87,7 +86,6 @@ public class UserService {
             .userId(updateUser.getId())
             .email(updateUser.getEmail())
             .nickname(updateUser.getNickname())
-            .language(updateUser.getLanguage())
             .build();
     }
 
@@ -100,7 +98,6 @@ public class UserService {
             .userId(findUser.getId())
             .email(findUser.getEmail())
             .nickname(findUser.getNickname())
-            .language(findUser.getLanguage())
             .build();
     }
 

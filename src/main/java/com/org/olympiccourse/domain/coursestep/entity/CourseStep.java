@@ -44,9 +44,6 @@ public class CourseStep extends BaseTimeEntity {
     @Column
     private String descriptionKo;
 
-    @Column
-    private String descriptionEn;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

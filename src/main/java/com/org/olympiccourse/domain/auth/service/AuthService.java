@@ -2,6 +2,7 @@ package com.org.olympiccourse.domain.auth.service;
 
 import com.org.olympiccourse.domain.auth.request.LoginRequestDto;
 import com.org.olympiccourse.domain.auth.response.LoginResponseDto;
+import com.org.olympiccourse.domain.auth.response.NewTokenResponse;
 import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
 import com.org.olympiccourse.global.security.basic.CustomUserDetails;
 import com.org.olympiccourse.global.security.jwt.JwtService;
@@ -67,6 +68,16 @@ public class AuthService {
 
         HttpHeaders headers = new HttpHeaders();
         refreshTokenSend2Client(headers, refreshToken, 0);
+
+        return headers;
+    }
+
+    public HttpHeaders reissue(String refreshToken, String accessToken) {
+
+        NewTokenResponse newTokenResponse = jwtService.reissue(refreshToken, accessToken);
+        HttpHeaders headers = new HttpHeaders();
+        accessTokenSend2Client(headers, newTokenResponse.accessToken());
+        refreshTokenSend2Client(headers, newTokenResponse.refreshToken(), 7);
 
         return headers;
     }

@@ -11,7 +11,7 @@ public class RefreshTokenRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    private static final String PREFIX = "refresh_token:member:";
+    private static final String PREFIX = "refresh_token:user:";
 
     public void save(Long userId, String refreshToken) {
 
@@ -19,7 +19,7 @@ public class RefreshTokenRepository {
             .set(PREFIX + userId, refreshToken, 7, TimeUnit.DAYS);
     }
 
-    public String findByMemberId(String userId) {
+    public String findByUserId(String userId) {
         return redisTemplate.opsForValue().get(PREFIX + userId);
     }
 

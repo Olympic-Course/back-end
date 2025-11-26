@@ -12,5 +12,5 @@ import org.springframework.http.HttpHeaders;
 public class LoginResponseDto {
 
     private HttpHeaders httpHeaders;
-    private BasicUserInfoResponse memberInfo;
+    private BasicUserInfoResponse userInfo;
 }

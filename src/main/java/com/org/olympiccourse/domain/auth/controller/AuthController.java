@@ -28,7 +28,7 @@ public class AuthController {
         LoginResponseDto result = authService.login(loginRequestDto);
         return ResponseEntity.ok()
             .headers(result.getHttpHeaders())
-            .body(ApiResponse.success(AuthResponseCode.LOGIN_SUCCESS, result.getMemberInfo()));
+            .body(ApiResponse.success(AuthResponseCode.LOGIN_SUCCESS, result.getUserInfo()));
     }
 
     @PostMapping("/logout")
@@ -39,5 +39,15 @@ public class AuthController {
         HttpHeaders result = authService.logout(accessToken, refreshToken);
         return ResponseEntity.ok().headers(result)
             .body(ApiResponse.successWithoutData(AuthResponseCode.LOGOUT_SUCCESS));
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<ApiResponse<Object>> reissue(
+        @RequestHeader("Authorization") String accessToken,
+        @Parameter(hidden = true) @CookieValue(name = "refresh-token") String refreshToken) {
+
+        HttpHeaders result = authService.reissue(accessToken, refreshToken);
+        return ResponseEntity.ok().headers(result)
+            .body(ApiResponse.successWithoutData(AuthResponseCode.REISSUE_SUCCESS));
     }
 }

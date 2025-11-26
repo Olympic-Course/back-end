@@ -7,5 +7,6 @@ public enum Duration {
     HOUR_2_3,
     HOUR_3_4,
     HOUR_4_5,
-    HOUR_5_6
+    HOUR_5_6,
+    NONE
 }

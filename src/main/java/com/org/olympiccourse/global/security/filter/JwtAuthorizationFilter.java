@@ -30,6 +30,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         "/api/auth/login", "/api/users", "/api/users/check"
     );
 
+    private final Set<String> excludeGetPaths = Set.of("/api/courses/**");
+
     public JwtAuthorizationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
@@ -68,7 +70,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         Authentication authentication = jwtUtil.getAuthentication(accessToken);
-        log.info("로그인한 사용자: {}", ((CustomUserDetails)authentication.getPrincipal()).getUser().getNickname());
+        log.info("로그인한 사용자: {}",
+            ((CustomUserDetails) authentication.getPrincipal()).getUser().getNickname());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
@@ -76,8 +79,28 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private boolean isExcludedPath(HttpServletRequest request) {
         String path = request.getRequestURI();
+        String method = request.getMethod();
 
-        return excludeAllPaths.stream()
+        boolean matchAll = excludeAllPaths.stream()
             .anyMatch(pattern -> antPathMatcher.match(pattern, path));
+
+        if (matchAll) {
+            return true;
+        }
+
+        if ("GET".equals(method)) {
+            boolean matchGet = excludeGetPaths.stream()
+                .anyMatch(pattern -> antPathMatcher.match(pattern, path));
+
+            if (matchGet) {
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader == null || authHeader.isBlank()) {
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        return false;
     }
 }

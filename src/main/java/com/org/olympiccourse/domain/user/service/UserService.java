@@ -6,6 +6,7 @@ import com.org.olympiccourse.domain.user.entity.Status;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.repository.UserRepository;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
+import com.org.olympiccourse.domain.user.request.NewPasswordRequestDto;
 import com.org.olympiccourse.domain.user.request.PasswordCheckRequestDto;
 import com.org.olympiccourse.domain.user.request.Type;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
@@ -29,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
+    private static final String CHECK_PASSWORD_PREFIX = "check-password:";
 
     public void join(UserJoinRequestDto userJoinRequestDto) {
 
@@ -103,13 +105,24 @@ public class UserService {
     }
 
     public void checkCurPassword(User user, PasswordCheckRequestDto passwordCheckRequestDto) {
-        String prefix = "check-password:";
 
-        if (passwordEncoder.matches(passwordCheckRequestDto.getCurPassword(), user.getPassword())) {
+        if (passwordEncoder.matches(passwordCheckRequestDto.curPassword(), user.getPassword())) {
             redisTemplate.opsForValue()
-                .set(prefix + user.getId(), "checked", Duration.ofMinutes(5));
+                .set(CHECK_PASSWORD_PREFIX + user.getId(), "checked", Duration.ofMinutes(5));
         } else {
             throw new CustomException(UserResponseCode.NOT_MATCHED_PASSWORD);
+        }
+    }
+
+    public void changePassword(User user, NewPasswordRequestDto request) {
+
+        User findUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new CustomException(UserResponseCode.USER_NOT_FOUND));
+        if (redisTemplate.hasKey(CHECK_PASSWORD_PREFIX + user.getId())) {
+            redisTemplate.delete(CHECK_PASSWORD_PREFIX + user.getId());
+            findUser.changePassword(passwordEncoder.encode(request.newPassword()));
+        } else {
+            throw new CustomException(UserResponseCode.NEED_PASSWORD_CHECK);
         }
     }
 }

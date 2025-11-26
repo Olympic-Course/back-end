@@ -3,6 +3,7 @@ package com.org.olympiccourse.domain.user.controller;
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.domain.user.request.CheckDuplicationRequestDto;
+import com.org.olympiccourse.domain.user.request.NewPasswordRequestDto;
 import com.org.olympiccourse.domain.user.request.PasswordCheckRequestDto;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,10 +67,17 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(UserResponseCode.USER_GET_SUCCESS, result));
     }
 
-    @PostMapping("/me/check-password")
+    @PostMapping("/me/password/check")
     public ResponseEntity<ApiResponse<Object>> checkPassword(@LoginUser User user,
         @RequestBody PasswordCheckRequestDto passwordCheckRequestDto) {
         userService.checkCurPassword(user, passwordCheckRequestDto);
+        return ResponseEntity.ok(
+            ApiResponse.success(UserResponseCode.PASSWORD_VERIFY_SUCCESS, null));
+    }
+
+    @PutMapping("/me/password/change")
+    public ResponseEntity<ApiResponse<Object>> changePassword(@LoginUser User user, @RequestBody NewPasswordRequestDto request){
+        userService.changePassword(user, request);
         return ResponseEntity.ok(
             ApiResponse.success(UserResponseCode.PASSWORD_VERIFY_SUCCESS, null));
     }

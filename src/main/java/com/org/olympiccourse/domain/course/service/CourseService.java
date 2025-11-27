@@ -169,4 +169,15 @@ public class CourseService {
             }
         }
     }
+
+    public void deleteCourse(User user, Long courseId) {
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new CustomException(CourseResponseCode.COURSE_NOT_FOUND));
+
+        if (!course.getUser().getId().equals(user.getId())) {
+            throw new CustomException(CourseResponseCode.COURSE_ACCESS_DENIED);
+        }
+
+        courseRepository.delete(course);
+    }
 }

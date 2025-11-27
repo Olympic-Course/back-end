@@ -1,5 +1,6 @@
 package com.org.olympiccourse.domain.course.entity;
 
+import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.global.BaseTimeEntity;
 import jakarta.persistence.Column;
@@ -52,4 +53,12 @@ public class Course extends BaseTimeEntity {
     @JoinColumn(name = "users_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    public void update(CreateCourseRequestDto request) {
+        this.titleKo = request.title();
+        this.commentKo = request.comment();
+        this.duration = request.duration();
+        this.cost = request.cost();
+        this.secret = request.secret();
+    }
 }

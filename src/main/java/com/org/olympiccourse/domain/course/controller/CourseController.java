@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,7 +32,8 @@ public class CourseController {
         @RequestBody CreateCourseRequestDto request) {
 
         CreateCourseResponseDto result = courseService.create(user, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(CourseResponseCode.COURSE_CREATED, result));
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(ApiResponse.success(CourseResponseCode.COURSE_CREATED, result));
     }
 
     @GetMapping("/courses/{courseId}")
@@ -39,13 +41,25 @@ public class CourseController {
         @LoginUser User user, @PathVariable Long courseId) {
 
         DetailReadCourseResponseDto result = courseService.getDetailCourse(user, courseId);
-        return ResponseEntity.ok(ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
+        return ResponseEntity.ok(
+            ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
     }
 
     @DeleteMapping("/courses/{courseId}")
-    public ResponseEntity<ApiResponse<Void>> deleteCourse(@LoginUser User user, @PathVariable Long courseId) {
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(@LoginUser User user,
+        @PathVariable Long courseId) {
 
         courseService.deleteCourse(user, courseId);
-        return ResponseEntity.ok(ApiResponse.successWithoutData(CourseResponseCode.COURSE_DELETE_SUCCESS));
+        return ResponseEntity.ok(
+            ApiResponse.successWithoutData(CourseResponseCode.COURSE_DELETE_SUCCESS));
+    }
+
+    @PutMapping("/courses/{courseId}")
+    public ResponseEntity<ApiResponse<DetailReadCourseResponseDto>> updateCourse(
+        @LoginUser User user,
+        @PathVariable Long courseId, @RequestBody CreateCourseRequestDto request) {
+        DetailReadCourseResponseDto result = courseService.updateCourse(user, courseId, request);
+        return ResponseEntity.ok(
+            ApiResponse.success(CourseResponseCode.COURSE_UPDATE_SUCCESS, result));
     }
 }

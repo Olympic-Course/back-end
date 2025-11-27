@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CourseStepRepository extends JpaRepository<CourseStep, Long> {
 
     List<CourseStep> findAllByCourseIdOrderByStepOrderAsc(Long id);
+
+    void deleteByCourseId(Long courseId);
 }

@@ -180,4 +180,37 @@ public class CourseService {
 
         courseRepository.delete(course);
     }
+
+    public DetailReadCourseResponseDto updateCourse(User user, Long courseId,
+        CreateCourseRequestDto request) {
+
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new CustomException(CourseResponseCode.COURSE_NOT_FOUND));
+
+        if (!course.getUser().getId().equals(user.getId())) {
+            throw new CustomException(CourseResponseCode.COURSE_ACCESS_DENIED);
+        }
+
+        course.update(request);
+
+        courseTagRepository.deleteByCourse(course);
+        courseStepRepository.deleteByCourseId(courseId);
+
+        long likeNum = likeRepository.countByCourseId(courseId);
+        boolean liked = likeRepository.existsByCourseIdAndUserId(courseId, user.getId());
+
+        return DetailReadCourseResponseDto.builder()
+            .courseId(course.getId())
+            .title(course.getTitleKo())
+            .writer(course.getUser().getNickname())
+            .comment(course.getCommentKo())
+            .secret(course.isSecret())
+            .tag(saveTag(request, course))
+            .steps(saveStepAndPhoto(request, course))
+            .duration(course.getDuration())
+            .cost(course.getCost())
+            .liked(liked)
+            .likeNum(likeNum)
+            .build();
+    }
 }

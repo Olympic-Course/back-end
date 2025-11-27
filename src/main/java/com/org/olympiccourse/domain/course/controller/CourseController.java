@@ -11,6 +11,7 @@ import com.org.olympiccourse.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,5 +40,12 @@ public class CourseController {
 
         DetailReadCourseResponseDto result = courseService.getDetailCourse(user, courseId);
         return ResponseEntity.ok(ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
+    }
+
+    @DeleteMapping("/courses/{courseId}")
+    public ResponseEntity<ApiResponse<Void>> deleteCourse(@LoginUser User user, @PathVariable Long courseId) {
+
+        courseService.deleteCourse(user, courseId);
+        return ResponseEntity.ok(ApiResponse.successWithoutData(CourseResponseCode.COURSE_DELETE_SUCCESS));
     }
 }

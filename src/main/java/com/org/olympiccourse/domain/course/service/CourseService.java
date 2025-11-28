@@ -6,8 +6,10 @@ import com.org.olympiccourse.domain.course.repository.CourseCustomRepository;
 import com.org.olympiccourse.domain.course.repository.CourseRepository;
 import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
+import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
 import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseSimpleListResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.StepResponseDto;
@@ -249,5 +251,26 @@ public class CourseService {
 
     private List<CourseOverviewResponseDto> getBestCourses(Long userId) {
         return courseCustomRepository.findBestThreeCourses(userId);
+    }
+
+    public CourseSimpleListResponseDto getWrittenCourses(User user, CourseSearchCond condition,
+        MyCourseVisibility visibility) {
+
+        List<CourseOverviewResponseDto> courses = courseCustomRepository.findByUserIdWithSearchCond(
+            user.getId(), condition, visibility, DEFAULT_PAGE_SIZE);
+
+        boolean hasNext = courses.size() > DEFAULT_PAGE_SIZE;
+
+        List<CourseOverviewResponseDto> returnCourses;
+        if (hasNext) {
+            returnCourses = new ArrayList<>(courses.subList(0, DEFAULT_PAGE_SIZE));
+        } else {
+            returnCourses = new ArrayList<>(courses);
+        }
+
+        Long nextCursor = hasNext ? courses.get(courses.size() - 1).getCourseId() : null;
+        boolean isLast = !hasNext;
+
+        return new CourseSimpleListResponseDto(returnCourses, nextCursor, isLast);
     }
 }

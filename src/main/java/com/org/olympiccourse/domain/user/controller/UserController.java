@@ -76,7 +76,8 @@ public class UserController {
     }
 
     @PutMapping("/me/password/change")
-    public ResponseEntity<ApiResponse<Object>> changePassword(@LoginUser User user, @RequestBody NewPasswordRequestDto request){
+    public ResponseEntity<ApiResponse<Object>> changePassword(@LoginUser User user,
+        @RequestBody NewPasswordRequestDto request) {
         userService.changePassword(user, request);
         return ResponseEntity.ok(
             ApiResponse.success(UserResponseCode.PASSWORD_VERIFY_SUCCESS, null));

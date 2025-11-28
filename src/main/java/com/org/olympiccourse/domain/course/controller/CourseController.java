@@ -3,7 +3,9 @@ package com.org.olympiccourse.domain.course.controller;
 import com.org.olympiccourse.domain.course.code.CourseResponseCode;
 import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
+import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseSimpleListResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.service.CourseService;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,9 +33,11 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping("/courses")
-    public ResponseEntity<ApiResponse<CourseListResponseDto>> getCourseList(@LoginUser User user, CourseSearchCond condition){
+    public ResponseEntity<ApiResponse<CourseListResponseDto>> getCourseList(@LoginUser User user,
+        CourseSearchCond condition) {
         CourseListResponseDto result = courseService.getCourseList(user, condition);
-        return ResponseEntity.ok(ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
+        return ResponseEntity.ok(
+            ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
     }
 
     @PostMapping("/courses")
@@ -69,5 +74,15 @@ public class CourseController {
         DetailReadCourseResponseDto result = courseService.updateCourse(user, courseId, request);
         return ResponseEntity.ok(
             ApiResponse.success(CourseResponseCode.COURSE_UPDATE_SUCCESS, result));
+    }
+
+    @GetMapping("/users/me/courses")
+    public ResponseEntity<ApiResponse<CourseSimpleListResponseDto>> getWrittenCourses(
+        @LoginUser User user, CourseSearchCond condition,
+        @RequestParam(defaultValue = "ALL") MyCourseVisibility visibility) {
+        CourseSimpleListResponseDto result = courseService.getWrittenCourses(user, condition,
+            visibility);
+        return ResponseEntity.ok(
+            ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
     }
 }

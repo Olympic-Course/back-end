@@ -1,7 +1,9 @@
 package com.org.olympiccourse.domain.course.controller;
 
 import com.org.olympiccourse.domain.course.code.CourseResponseCode;
+import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
+import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.service.CourseService;
@@ -26,6 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
+
+    @GetMapping("/courses")
+    public ResponseEntity<ApiResponse<CourseListResponseDto>> getCourseList(@LoginUser User user, CourseSearchCond condition){
+        CourseListResponseDto result = courseService.getCourseList(user, condition);
+        return ResponseEntity.ok(ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
+    }
 
     @PostMapping("/courses")
     public ResponseEntity<ApiResponse<CreateCourseResponseDto>> createCourse(@LoginUser User user,

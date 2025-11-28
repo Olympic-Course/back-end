@@ -2,8 +2,12 @@ package com.org.olympiccourse.domain.course.service;
 
 import com.org.olympiccourse.domain.course.code.CourseResponseCode;
 import com.org.olympiccourse.domain.course.entity.Course;
+import com.org.olympiccourse.domain.course.repository.CourseCustomRepository;
 import com.org.olympiccourse.domain.course.repository.CourseRepository;
+import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
+import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.StepResponseDto;
@@ -35,6 +39,9 @@ public class CourseService {
     private final CourseTagRepository courseTagRepository;
     private final CourseStepRepository courseStepRepository;
     private final LikeRepository likeRepository;
+    private final CourseCustomRepository courseCustomRepository;
+    private static final int DEFAULT_PAGE_SIZE = 20;
+
 
     public CreateCourseResponseDto create(User user, CreateCourseRequestDto request) {
 
@@ -212,5 +219,35 @@ public class CourseService {
             .liked(liked)
             .likeNum(likeNum)
             .build();
+    }
+
+    public CourseListResponseDto getCourseList(User user, CourseSearchCond condition) {
+
+        Long userId = (user == null) ? null : user.getId();
+
+        // 베스트 3 코스
+        List<CourseOverviewResponseDto> bests = getBestCourses(userId);
+
+        // 조회
+        List<CourseOverviewResponseDto> courses = courseCustomRepository.searchCourseList(userId,
+            condition, DEFAULT_PAGE_SIZE);
+
+        boolean hasNext = courses.size() > DEFAULT_PAGE_SIZE;
+
+        List<CourseOverviewResponseDto> returnCourses;
+        if (hasNext) {
+            returnCourses = new ArrayList<>(courses.subList(0, DEFAULT_PAGE_SIZE));
+        } else {
+            returnCourses = new ArrayList<>(courses);
+        }
+
+        Long nextCursor = hasNext ? courses.get(courses.size() - 1).getCourseId() : null;
+        boolean isLast = !hasNext;
+
+        return new CourseListResponseDto(bests, returnCourses, nextCursor, isLast);
+    }
+
+    private List<CourseOverviewResponseDto> getBestCourses(Long userId) {
+        return courseCustomRepository.findBestThreeCourses(userId);
     }
 }

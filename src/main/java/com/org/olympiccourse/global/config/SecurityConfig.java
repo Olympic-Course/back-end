@@ -62,6 +62,7 @@ public class SecurityConfig {
                 ).permitAll()
                 // 코스
                 .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
                 .anyRequest().authenticated()
             );
 

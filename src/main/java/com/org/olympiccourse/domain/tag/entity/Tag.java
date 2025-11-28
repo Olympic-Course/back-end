@@ -12,10 +12,8 @@ public enum Tag {
     SUNNY,
     RAIN,
     WINDY,
-
     COLD,
     HOT,
-    FINE_DUST,
 
     ON_FOOT,
     PUBLIC_TRANSPORT,

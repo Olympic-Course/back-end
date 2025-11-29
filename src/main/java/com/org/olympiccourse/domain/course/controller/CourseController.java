@@ -5,7 +5,7 @@ import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
 import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
-import com.org.olympiccourse.domain.course.response.CourseSimpleListResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseSimpleListWithTagResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.service.CourseService;
@@ -77,10 +77,10 @@ public class CourseController {
     }
 
     @GetMapping("/users/me/courses")
-    public ResponseEntity<ApiResponse<CourseSimpleListResponseDto>> getWrittenCourses(
+    public ResponseEntity<ApiResponse<CourseSimpleListWithTagResponseDto>> getWrittenCourses(
         @LoginUser User user, CourseSearchCond condition,
         @RequestParam(defaultValue = "ALL") MyCourseVisibility visibility) {
-        CourseSimpleListResponseDto result = courseService.getWrittenCourses(user, condition,
+        CourseSimpleListWithTagResponseDto result = courseService.getWrittenCourses(user, condition,
             visibility);
         return ResponseEntity.ok(
             ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));

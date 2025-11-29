@@ -9,7 +9,8 @@ import com.org.olympiccourse.domain.course.request.CreateCourseRequestDto;
 import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseListResponseDto;
 import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
-import com.org.olympiccourse.domain.course.response.CourseSimpleListResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseOverviewTagResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseSimpleListWithTagResponseDto;
 import com.org.olympiccourse.domain.course.response.CreateCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.DetailReadCourseResponseDto;
 import com.org.olympiccourse.domain.course.response.StepResponseDto;
@@ -20,12 +21,16 @@ import com.org.olympiccourse.domain.coursestep.request.StepRequestDto;
 import com.org.olympiccourse.domain.like.repository.LikeRepository;
 import com.org.olympiccourse.domain.tag.entity.CourseTag;
 import com.org.olympiccourse.domain.tag.entity.Tag;
+import com.org.olympiccourse.domain.tag.repository.CourseTagCustomRepository;
 import com.org.olympiccourse.domain.tag.repository.CourseTagRepository;
+import com.org.olympiccourse.domain.tag.response.CourseTagProjection;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.global.response.CustomException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +44,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseTagRepository courseTagRepository;
+    private final CourseTagCustomRepository courseTagCustomRepository;
     private final CourseStepRepository courseStepRepository;
     private final LikeRepository likeRepository;
     private final CourseCustomRepository courseCustomRepository;
@@ -253,16 +259,34 @@ public class CourseService {
         return courseCustomRepository.findBestThreeCourses(userId);
     }
 
-    public CourseSimpleListResponseDto getWrittenCourses(User user, CourseSearchCond condition,
+    public CourseSimpleListWithTagResponseDto getWrittenCourses(User user, CourseSearchCond condition,
         MyCourseVisibility visibility) {
 
-        List<CourseOverviewResponseDto> courses = courseCustomRepository.findByUserIdWithSearchCond(
+        List<CourseOverviewTagResponseDto> courses = courseCustomRepository.findByUserIdWithSearchCond(
             user.getId(), condition, visibility, DEFAULT_PAGE_SIZE);
+
+
+        List<Long> courseIds = courses.stream()
+            .map(CourseOverviewTagResponseDto::getCourseId)
+            .toList();
+
+        List<CourseTagProjection> tags = courseTagCustomRepository.findByCourseIds(courseIds);
+
+        Map<Long, List<Tag>> tagMap = tags.stream()
+            .collect(Collectors.groupingBy(
+                CourseTagProjection::courseId,
+                Collectors.mapping(CourseTagProjection::tag, Collectors.toList())
+            ));
+
+        courses.forEach(c -> c.setTags(
+            tagMap.getOrDefault(c.getCourseId(), List.of())
+        ));
+
 
         boolean hasNext = courses.size() > DEFAULT_PAGE_SIZE;
 
-        List<CourseOverviewResponseDto> returnCourses;
-        if (hasNext) {
+        List<CourseOverviewTagResponseDto> returnCourses;
+        if (hasNext){
             returnCourses = new ArrayList<>(courses.subList(0, DEFAULT_PAGE_SIZE));
         } else {
             returnCourses = new ArrayList<>(courses);
@@ -271,6 +295,6 @@ public class CourseService {
         Long nextCursor = hasNext ? courses.get(courses.size() - 1).getCourseId() : null;
         boolean isLast = !hasNext;
 
-        return new CourseSimpleListResponseDto(returnCourses, nextCursor, isLast);
+        return new CourseSimpleListWithTagResponseDto(returnCourses, nextCursor, isLast);
     }
 }

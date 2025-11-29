@@ -9,6 +9,7 @@ import static com.org.olympiccourse.domain.tag.entity.QCourseTag.courseTag;
 import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
+import com.org.olympiccourse.domain.course.response.CourseOverviewTagResponseDto;
 import com.org.olympiccourse.domain.tag.entity.Tag;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -91,9 +92,9 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
     }
 
     @Override
-    public List<CourseOverviewResponseDto> findByUserIdWithSearchCond(Long userId,
+    public List<CourseOverviewTagResponseDto> findByUserIdWithSearchCond(Long userId,
         CourseSearchCond condition, MyCourseVisibility visibility, int size) {
-        return jpaQueryFactory.select(Projections.constructor(CourseOverviewResponseDto.class,
+        return jpaQueryFactory.select(Projections.constructor(CourseOverviewTagResponseDto.class,
                 course.id, coursePhoto.path.max(), course.titleKo, course.user.nickname, getLikeCount(),
                 getLikedExpr(userId)))
             .from(course)

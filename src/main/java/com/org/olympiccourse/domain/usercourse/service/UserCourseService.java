@@ -39,7 +39,7 @@ public class UserCourseService {
     private final UserCourseRepository userCourseRepository;
     private final UserCourseStepRepository userCourseStepRepository;
 
-    public CreateCourseMemoResponseDto createMemo(User user, CreateCourseMemoRequestDto request,
+    public UserStepsResponseDto createMemo(User user, CreateCourseMemoRequestDto request,
         Long courseId) {
 
         Course findCourse = validCourse(user.getId(), courseId);
@@ -56,7 +56,8 @@ public class UserCourseService {
             request, courseId, courseSteps, saveUserCourse);
         userCourseStepRepository.saveAll(userCourseSteps);
 
-        return new CreateCourseMemoResponseDto(saveUserCourse.getId());
+        return new UserStepsResponseDto(saveUserCourse.getId(), getDetailUserStepResponseDtoList(
+            userCourseSteps));
     }
 
     public UserStepsResponseDto updateMemo(User user, CreateCourseMemoRequestDto request,
@@ -79,6 +80,12 @@ public class UserCourseService {
 
         List<UserCourseStep> savedSteps = userCourseStepRepository.saveAll(userCourseSteps);
 
+        return new UserStepsResponseDto(userCourseId, getDetailUserStepResponseDtoList(
+            savedSteps));
+    }
+
+    private List<DetailUserStepResponseDto> getDetailUserStepResponseDtoList(
+        List<UserCourseStep> savedSteps) {
         List<DetailUserStepResponseDto> detailUserStepResponseDtos = savedSteps.stream().map(
                 ucs -> DetailUserStepResponseDto.builder()
                     .stepId(ucs.getCourseStep().getId())
@@ -90,8 +97,7 @@ public class UserCourseService {
                     .build())
             .sorted(Comparator.comparing(DetailUserStepResponseDto::stepOrder))
             .toList();
-
-        return new UserStepsResponseDto(userCourseId, detailUserStepResponseDtos);
+        return detailUserStepResponseDtos;
     }
 
     private List<UserCourseStep> getUserCourseSteps(CreateCourseMemoRequestDto request,

@@ -63,6 +63,8 @@ public class SecurityConfig {
                 // 코스
                 .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
+                // 지도
+                .requestMatchers("/api/map/places").permitAll()
                 .anyRequest().authenticated()
             );
 

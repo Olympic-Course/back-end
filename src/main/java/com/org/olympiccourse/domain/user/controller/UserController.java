@@ -8,6 +8,7 @@ import com.org.olympiccourse.domain.user.request.PasswordCheckRequestDto;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
 import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
+import com.org.olympiccourse.domain.user.response.UserInfoResponse;
 import com.org.olympiccourse.domain.user.service.UserService;
 import com.org.olympiccourse.global.annotation.LoginUser;
 import com.org.olympiccourse.global.response.ApiResponse;
@@ -62,8 +63,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ApiResponse<BasicUserInfoResponse>> get(@LoginUser User user) {
-        BasicUserInfoResponse result = userService.getUserInfo(user);
+    public ResponseEntity<ApiResponse<UserInfoResponse>> get(@LoginUser User user) {
+        UserInfoResponse result = userService.getUserInfo(user);
         return ResponseEntity.ok(ApiResponse.success(UserResponseCode.USER_GET_SUCCESS, result));
     }
 

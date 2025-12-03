@@ -63,6 +63,11 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "org.testcontainers:junit-jupiter:1.17.2"
     testImplementation "org.testcontainers:mysql:1.17.2"
+
+    // aws
+    implementation platform("software.amazon.awssdk:bom:2.31.70")
+    implementation "software.amazon.awssdk:s3"
+    implementation "software.amazon.awssdk:sso"
 }
 
 def querydslDir = "build/generated/querydsl";

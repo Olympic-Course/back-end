@@ -67,7 +67,6 @@ dependencies {
     // aws
     implementation platform("software.amazon.awssdk:bom:2.31.70")
     implementation "software.amazon.awssdk:s3"
-    implementation "software.amazon.awssdk:sso"
 }
 
 def querydslDir = "build/generated/querydsl";

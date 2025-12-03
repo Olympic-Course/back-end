@@ -12,10 +12,12 @@ public record PhotoCreateResponseDto(
 
     Boolean isRep) {
 
-    public static PhotoCreateResponseDto from(CoursePhoto photo) {
+    public static PhotoCreateResponseDto of(CoursePhoto photo, String cloudFrontDomain) {
+        String fullUrl = "https://" + cloudFrontDomain + "/" + photo.getPath();
+
         return PhotoCreateResponseDto.builder()
             .photoId(photo.getId())
-            .path(photo.getPath())
+            .path(fullUrl)
             .isRep(photo.isRep())
             .build();
     }

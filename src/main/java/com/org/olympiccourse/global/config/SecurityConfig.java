@@ -67,6 +67,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/map/places").permitAll()
                 // 홈
                 .requestMatchers("/api/home").permitAll()
+                // 편의시설 정보 데이터 가져오기
+                .requestMatchers(HttpMethod.POST, "/admin/facilities/import").hasRole("ADMIN")
                 .anyRequest().authenticated()
             );
 

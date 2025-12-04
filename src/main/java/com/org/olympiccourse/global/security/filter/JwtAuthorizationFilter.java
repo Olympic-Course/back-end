@@ -30,7 +30,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         "/api/auth/login", "/api/users", "/api/users/check", "/api/map/places"
     );
 
-    private final Set<String> excludeGetPaths = Set.of("/api/courses/**", "/api/courses");
+    private final Set<String> excludeGetPaths = Set.of("/api/courses/**", "/api/courses", "/api/home");
 
     public JwtAuthorizationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;

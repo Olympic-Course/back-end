@@ -66,7 +66,7 @@ public class SecurityConfig {
                 // 지도
                 .requestMatchers("/api/map/places").permitAll()
                 // 홈
-                .requestMatchers("/api/home").permitAll()
+                .requestMatchers("/api/home", "/api/events").permitAll()
                 // 편의시설 정보 데이터 가져오기
                 .requestMatchers(HttpMethod.POST, "/admin/facilities/import").hasRole("ADMIN")
                 .anyRequest().authenticated()

@@ -85,4 +85,14 @@ public class CourseController {
         return ResponseEntity.ok(
             ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
     }
+
+    @GetMapping("/users/me/likes")
+    public ResponseEntity<ApiResponse<CourseSimpleListWithTagResponseDto>> getLikedCourses(
+        @LoginUser User user, CourseSearchCond condition,
+        @RequestParam(defaultValue = "ALL") MyCourseVisibility visibility) {
+        CourseSimpleListWithTagResponseDto result = courseService.getLikedCourses(user, condition,
+            visibility);
+        return ResponseEntity.ok(
+            ApiResponse.success(CourseResponseCode.COURSE_GET_SUCCESS, result));
+    }
 }

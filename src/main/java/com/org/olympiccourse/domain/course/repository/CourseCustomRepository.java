@@ -14,4 +14,7 @@ public interface CourseCustomRepository {
 
     List<CourseOverviewTagResponseDto> findByUserIdWithSearchCond(Long userId,
         CourseSearchCond condition, MyCourseVisibility visibility, int size);
+
+    List<CourseOverviewTagResponseDto> findByUserIdWithSearchCondAndLike(Long userId,
+        CourseSearchCond condition, MyCourseVisibility visibility, int size);
 }

@@ -21,11 +21,10 @@ public class S3Controller {
     private final S3PresignService s3PresignService;
 
 
-    @PostMapping("presigned/{stepId}")
+    @PostMapping("presigned")
     public ResponseEntity<ApiResponse<PresignedUrlResponse>> imagePresignedUrl(
-        @PathVariable Long stepId, @RequestBody PresignRequestDto request) {
-        PresignedUrlResponse result = s3PresignService.createUploadUrl(
-            stepId, request);
+        @RequestBody PresignRequestDto request) {
+        PresignedUrlResponse result = s3PresignService.createUploadUrl(request);
         return ResponseEntity.ok(
             ApiResponse.success(S3ResponseCode.S3_PRESIGNED_URL_CREATED, result));
     }

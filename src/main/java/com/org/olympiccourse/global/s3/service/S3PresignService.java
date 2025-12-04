@@ -6,6 +6,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,9 @@ public class S3PresignService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public PresignedUrlResponse createUploadUrl(Long stepId, PresignRequestDto request) {
+    public PresignedUrlResponse createUploadUrl(PresignRequestDto request) {
 
-        String fileName = createFileName(String.valueOf(stepId), request.getExt());
+        String fileName = createFileName(request.getExt());
         PutObjectRequest put = PutObjectRequest.builder()
             .bucket(bucket).key(fileName)
             .build();
@@ -35,9 +36,9 @@ public class S3PresignService {
         return new PresignedUrlResponse(signed.url().toString(), fileName);
     }
 
-    private String createFileName(String stepId, String ext){
+    private String createFileName(String ext){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String timestamp = LocalDateTime.now(clock).format(formatter);
-        return stepId + "_" + timestamp + "." + ext;
+        return timestamp + "_" + UUID.randomUUID() +  "." + ext;
     }
 }

@@ -27,7 +27,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     private final Set<String> excludeAllPaths = Set.of(
-        "/api/auth/login", "/api/users", "/api/users/check", "/api/map/places"
+        "/api/auth/login", "/api/users", "/api/users/check", "/api/map/places", "/api/events"
     );
 
     private final Set<String> excludeGetPaths = Set.of("/api/courses/**", "/api/courses", "/api/home");

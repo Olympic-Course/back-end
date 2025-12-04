@@ -1,5 +1,7 @@
 package com.org.olympiccourse.domain.user.service;
 
+import com.org.olympiccourse.domain.course.repository.CourseRepository;
+import com.org.olympiccourse.domain.like.repository.LikeRepository;
 import com.org.olympiccourse.domain.user.code.UserResponseCode;
 import com.org.olympiccourse.domain.user.entity.Role;
 import com.org.olympiccourse.domain.user.entity.Status;
@@ -12,6 +14,7 @@ import com.org.olympiccourse.domain.user.request.Type;
 import com.org.olympiccourse.domain.user.request.UserJoinRequestDto;
 import com.org.olympiccourse.domain.user.request.UserUpdateRequestDto;
 import com.org.olympiccourse.domain.user.response.BasicUserInfoResponse;
+import com.org.olympiccourse.domain.user.response.UserInfoResponse;
 import com.org.olympiccourse.global.response.CustomException;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private static final String CHECK_PASSWORD_PREFIX = "check-password:";
+    private final CourseRepository courseRepository;
+    private final LikeRepository likeRepository;
 
     public void join(UserJoinRequestDto userJoinRequestDto) {
 
@@ -89,15 +94,20 @@ public class UserService {
             .build();
     }
 
-    public BasicUserInfoResponse getUserInfo(User user) {
+    public UserInfoResponse getUserInfo(User user) {
 
         User findUser = userRepository.findById(user.getId())
             .orElseThrow(() -> new CustomException(UserResponseCode.USER_NOT_FOUND));
 
-        return BasicUserInfoResponse.builder()
+        long postCount = courseRepository.countByUserId(findUser.getId());
+        long likedPostCount = likeRepository.countByUserId(findUser.getId());
+
+        return UserInfoResponse.builder()
             .userId(findUser.getId())
             .email(findUser.getEmail())
             .nickname(findUser.getNickname())
+            .postCount(postCount)
+            .likedPostCount(likedPostCount)
             .build();
     }
 

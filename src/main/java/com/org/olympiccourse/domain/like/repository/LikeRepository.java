@@ -8,4 +8,6 @@ public interface LikeRepository extends JpaRepository<CourseLike, Long> {
     long countByCourseId(Long courseId);
 
     boolean existsByCourseIdAndUserId(Long courseId, Long id);
+
+    long countByUserId(Long id);
 }

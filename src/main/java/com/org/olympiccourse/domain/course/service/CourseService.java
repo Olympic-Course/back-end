@@ -255,7 +255,7 @@ public class CourseService {
         return new CourseListResponseDto(bests, returnCourses, nextCursor, isLast);
     }
 
-    private List<CourseOverviewResponseDto> getBestCourses(Long userId) {
+    public List<CourseOverviewResponseDto> getBestCourses(Long userId) {
         return courseCustomRepository.findBestThreeCourses(userId);
     }
 

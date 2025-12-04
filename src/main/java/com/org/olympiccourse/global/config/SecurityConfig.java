@@ -65,6 +65,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/courses").permitAll()
                 // 지도
                 .requestMatchers("/api/map/places").permitAll()
+                // 홈
+                .requestMatchers("/api/home").permitAll()
                 .anyRequest().authenticated()
             );
 

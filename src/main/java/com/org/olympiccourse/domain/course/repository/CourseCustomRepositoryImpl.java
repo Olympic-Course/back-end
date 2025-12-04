@@ -116,6 +116,32 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
             .fetch();
     }
 
+    @Override
+    public List<CourseOverviewTagResponseDto> findByUserIdWithSearchCondAndLike(Long userId,
+        CourseSearchCond condition, MyCourseVisibility visibility, int size) {
+        return jpaQueryFactory.select(Projections.constructor(CourseOverviewTagResponseDto.class,
+                course.id, coursePhoto.path.max(), course.titleKo, course.user.nickname, getLikeCount(),
+                getLikedExpr(userId)))
+            .from(course)
+            .join(courseStep).on(courseStep.course.eq(course))
+            .join(coursePhoto).on(coursePhoto.courseStep.eq(courseStep)
+                .and(coursePhoto.isRep.isTrue()))
+            .join(courseLike).on(courseLike.course.eq(course)
+                .and(courseLike.user.id.eq(userId)))
+            .leftJoin(courseTag).on(courseTag.course.eq(course))
+            .where(
+                keywordCond(condition.keyword()),
+                tagsCond(condition.tags()),
+                cursorCond(condition.cursor()),
+                myCourseCond(userId),
+                visibilityCond(visibility)
+            )
+            .groupBy(course.id)
+            .orderBy(course.id.desc())
+            .limit(size + 1)
+            .fetch();
+    }
+
     private BooleanExpression myCourseCond(Long userId) {
         return course.user.id.eq(userId);
     }

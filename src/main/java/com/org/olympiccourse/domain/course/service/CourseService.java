@@ -261,12 +261,12 @@ public class CourseService {
         return courseCustomRepository.findBestThreeCourses(userId);
     }
 
-    public CourseSimpleListWithTagResponseDto getWrittenCourses(User user, CourseSearchCond condition,
+    public CourseSimpleListWithTagResponseDto getWrittenCourses(User user,
+        CourseSearchCond condition,
         MyCourseVisibility visibility) {
 
         List<CourseOverviewTagResponseDto> courses = courseCustomRepository.findByUserIdWithSearchCond(
             user.getId(), condition, visibility, DEFAULT_PAGE_SIZE);
-
 
         List<Long> courseIds = courses.stream()
             .map(CourseOverviewTagResponseDto::getCourseId)
@@ -284,11 +284,10 @@ public class CourseService {
             tagMap.getOrDefault(c.getCourseId(), List.of())
         ));
 
-
         boolean hasNext = courses.size() > DEFAULT_PAGE_SIZE;
 
         List<CourseOverviewTagResponseDto> returnCourses;
-        if (hasNext){
+        if (hasNext) {
             returnCourses = new ArrayList<>(courses.subList(0, DEFAULT_PAGE_SIZE));
         } else {
             returnCourses = new ArrayList<>(courses);
@@ -298,5 +297,42 @@ public class CourseService {
         boolean isLast = !hasNext;
 
         return new CourseSimpleListWithTagResponseDto(returnCourses, nextCursor, isLast);
+    }
+
+    public CourseSimpleListWithTagResponseDto getLikedCourses(User user, CourseSearchCond condition,
+        MyCourseVisibility visibility) {
+        List<CourseOverviewTagResponseDto> courses = courseCustomRepository.findByUserIdWithSearchCondAndLike(
+            user.getId(), condition, visibility, DEFAULT_PAGE_SIZE);
+
+        List<Long> courseIds = courses.stream()
+            .map(CourseOverviewTagResponseDto::getCourseId)
+            .toList();
+
+        List<CourseTagProjection> tags = courseTagCustomRepository.findByCourseIds(courseIds);
+
+        Map<Long, List<Tag>> tagMap = tags.stream()
+            .collect(Collectors.groupingBy(
+                CourseTagProjection::courseId,
+                Collectors.mapping(CourseTagProjection::tag, Collectors.toList())
+            ));
+
+        courses.forEach(c -> c.setTags(
+            tagMap.getOrDefault(c.getCourseId(), List.of())
+        ));
+
+        boolean hasNext = courses.size() > DEFAULT_PAGE_SIZE;
+
+        List<CourseOverviewTagResponseDto> returnCourses;
+        if (hasNext) {
+            returnCourses = new ArrayList<>(courses.subList(0, DEFAULT_PAGE_SIZE));
+        } else {
+            returnCourses = new ArrayList<>(courses);
+        }
+
+        Long nextCursor = hasNext ? courses.get(courses.size() - 1).getCourseId() : null;
+        boolean isLast = !hasNext;
+
+        return new CourseSimpleListWithTagResponseDto(returnCourses, nextCursor, isLast);
+
     }
 }

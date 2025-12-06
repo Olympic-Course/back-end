@@ -12,6 +12,7 @@ import com.org.olympiccourse.domain.course.service.CourseService;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.global.annotation.LoginUser;
 import com.org.olympiccourse.global.response.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class CourseController {
 
     @PostMapping("/courses")
     public ResponseEntity<ApiResponse<CreateCourseResponseDto>> createCourse(@LoginUser User user,
-        @RequestBody CreateCourseRequestDto request) {
+        @Valid @RequestBody CreateCourseRequestDto request) {
 
         CreateCourseResponseDto result = courseService.create(user, request);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -70,7 +71,7 @@ public class CourseController {
     @PutMapping("/courses/{courseId}")
     public ResponseEntity<ApiResponse<DetailReadCourseResponseDto>> updateCourse(
         @LoginUser User user,
-        @PathVariable Long courseId, @RequestBody CreateCourseRequestDto request) {
+        @PathVariable Long courseId, @Valid @RequestBody CreateCourseRequestDto request) {
         DetailReadCourseResponseDto result = courseService.updateCourse(user, courseId, request);
         return ResponseEntity.ok(
             ApiResponse.success(CourseResponseCode.COURSE_UPDATE_SUCCESS, result));

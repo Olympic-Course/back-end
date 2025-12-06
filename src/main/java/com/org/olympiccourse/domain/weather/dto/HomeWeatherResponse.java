@@ -12,6 +12,7 @@ import lombok.Getter;
 public class HomeWeatherResponse {
     private Double temp;
     private Double feelsLike;
+    private Integer humidity;
     private Grade findDust;
     private Grade ultrafineDust;
     private Grade uv;

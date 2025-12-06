@@ -73,6 +73,7 @@ public class WeatherService {
         List<Item> first = grouped.get(firstTime);
 
         double nowTemp = Double.valueOf(findValue(first, "T1H"));
+        int humidity = Integer.valueOf(findValue(first, "REH"));
         double feelsLikeTemp;
 
         int month = LocalDateTime.now(clock).getMonthValue(); // 월
@@ -88,6 +89,7 @@ public class WeatherService {
         return WeatherResponse.builder()
             .temp(nowTemp)
             .feelsLike(feelsLikeTemp)
+            .humidity(humidity)
             .sky(Sky.getSky(findValue(first, "SKY")))
             .pty(Pty.getPty(findValue(first, "PTY")))
             .hourly(hourly)

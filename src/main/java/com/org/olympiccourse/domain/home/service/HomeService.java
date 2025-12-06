@@ -39,6 +39,7 @@ public class HomeService {
 
         HomeWeatherResponse weatherIntegrationData = HomeWeatherResponse.builder()
             .temp(weatherData.getTemp())
+            .humidity(weatherData.getHumidity())
             .feelsLike(weatherData.getFeelsLike())
             .sky(weatherData.getSky())
             .pty(weatherData.getPty())

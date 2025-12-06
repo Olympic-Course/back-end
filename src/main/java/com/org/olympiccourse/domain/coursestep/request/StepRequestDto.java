@@ -23,7 +23,6 @@ public record StepRequestDto(
 
     String description,
 
-    @Size(min = 1)
     @NotNull
     List<@NotNull @Valid PhotoCreateRequestDto> photos
 ) {

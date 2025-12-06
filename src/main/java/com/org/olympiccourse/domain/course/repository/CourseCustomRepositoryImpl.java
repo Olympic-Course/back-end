@@ -61,7 +61,7 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
                 getLikedExpr(userId)))
             .from(course)
             .join(courseStep).on(courseStep.course.eq(course))
-            .join(coursePhoto).on(coursePhoto.courseStep.eq(courseStep)
+            .leftJoin(coursePhoto).on(coursePhoto.courseStep.eq(courseStep)
                 .and(coursePhoto.isRep.isTrue()))
             .leftJoin(courseLike).on(courseLike.course.eq(course))
             .leftJoin(courseTag).on(courseTag.course.eq(course))

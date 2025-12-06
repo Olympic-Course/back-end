@@ -12,6 +12,7 @@ public class WeatherResponse {
 
     private Double temp;
     private Double feelsLike;
+    private Integer humidity;
     private Sky sky;
     private Pty pty;
     private List<HomeHourlyWeatherResponse> hourly;

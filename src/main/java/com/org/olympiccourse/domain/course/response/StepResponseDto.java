@@ -22,9 +22,13 @@ public record StepResponseDto(
     List<PhotoCreateResponseDto> photos
 ) {
 
-    public static StepResponseDto from(CourseStep step, String cloudFrontDomain) {
+    public static StepResponseDto from(CourseStep step) {
         List<PhotoCreateResponseDto> photoDtos = step.getPhotos()
-            .stream().map(photo -> PhotoCreateResponseDto.of(photo, cloudFrontDomain))
+            .stream().map(photo -> PhotoCreateResponseDto.builder()
+                .photoId(photo.getId())
+                .path(photo.getPath())
+                .isRep(photo.isRep())
+                .build())
             .toList();
 
         return StepResponseDto.builder()

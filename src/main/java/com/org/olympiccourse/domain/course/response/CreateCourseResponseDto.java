@@ -16,6 +16,8 @@ public record CreateCourseResponseDto(
 
     String writer,
 
+    Boolean isAuthor,
+
     Boolean secret,
 
     List<Tag> tag,

@@ -14,6 +14,8 @@ public record DetailReadCourseResponseDto(
 
     String writer,
 
+    Boolean isAuthor,
+
     Boolean secret,
 
     List<Tag> tag,

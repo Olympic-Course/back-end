@@ -33,7 +33,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,8 +49,6 @@ public class CourseService {
     private final LikeRepository likeRepository;
     private final CourseCustomRepository courseCustomRepository;
     private static final int DEFAULT_PAGE_SIZE = 20;
-    @Value("${cloud.aws.cloudfront.domain}")
-    private String cloudFrontDomain;
 
     public CreateCourseResponseDto create(User user, CreateCourseRequestDto request) {
 
@@ -116,7 +113,7 @@ public class CourseService {
         }
         List<CourseStep> savedSteps = courseStepRepository.saveAll(steps);
         return savedSteps.stream()
-            .map(step -> StepResponseDto.from(step, cloudFrontDomain))
+            .map(step -> StepResponseDto.from(step))
             .toList();
     }
 
@@ -155,7 +152,7 @@ public class CourseService {
         List<CourseStep> findCourseStep = courseStepRepository.findAllByCourseIdOrderByStepOrderAsc(
             findCourse.getId());
         List<StepResponseDto> stepResponseDtos = findCourseStep.stream()
-            .map(step -> StepResponseDto.from(step, cloudFrontDomain))
+            .map(step -> StepResponseDto.from(step))
             .toList();
         List<CourseTag> findTag = courseTagRepository.findAllByCourseId(findCourse.getId());
         long likeNum = likeRepository.countByCourseId(courseId);

@@ -133,7 +133,6 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
                 keywordCond(condition.keyword()),
                 tagsCond(condition.tags()),
                 cursorCond(condition.cursor()),
-                myCourseCond(userId),
                 visibilityCond(visibility)
             )
             .groupBy(course.id)

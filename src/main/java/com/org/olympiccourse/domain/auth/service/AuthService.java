@@ -72,9 +72,9 @@ public class AuthService {
         return headers;
     }
 
-    public HttpHeaders reissue(String refreshToken, String accessToken) {
+    public HttpHeaders reissue(String accessToken, String refreshToken) {
 
-        NewTokenResponse newTokenResponse = jwtService.reissue(refreshToken, accessToken);
+        NewTokenResponse newTokenResponse = jwtService.reissue(accessToken, refreshToken);
         HttpHeaders headers = new HttpHeaders();
         accessTokenSend2Client(headers, newTokenResponse.accessToken());
         refreshTokenSend2Client(headers, newTokenResponse.refreshToken(), 7);

@@ -57,8 +57,9 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests(auth -> auth
-                // 로그인, 회원가입, 중복체크
-                .requestMatchers("/api/auth/login", "/api/users", "/api/users/check"
+                // 로그인, 회원가입, 중복체크, 토큰 재발행
+                .requestMatchers("/api/auth/login", "/api/users", "/api/users/check",
+                    "/api/auth/reissue"
                 ).permitAll()
                 // 코스
                 .requestMatchers(HttpMethod.GET, "/api/courses/**").permitAll()

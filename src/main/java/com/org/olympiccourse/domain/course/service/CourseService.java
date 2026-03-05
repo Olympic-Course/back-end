@@ -26,6 +26,8 @@ import com.org.olympiccourse.domain.tag.repository.CourseTagRepository;
 import com.org.olympiccourse.domain.tag.response.CourseTagProjection;
 import com.org.olympiccourse.domain.user.entity.User;
 import com.org.olympiccourse.global.response.CustomException;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class CourseService {
     private final CourseStepRepository courseStepRepository;
     private final LikeRepository likeRepository;
     private final CourseCustomRepository courseCustomRepository;
+    private final Clock clock;
     private static final int DEFAULT_PAGE_SIZE = 20;
 
     public CreateCourseResponseDto create(User user, CreateCourseRequestDto request) {
@@ -235,8 +238,10 @@ public class CourseService {
 
         Long userId = (user == null) ? null : user.getId();
 
+        LocalDate now = LocalDate.now(clock);
+
         // 베스트 3 코스
-        List<CourseOverviewResponseDto> bests = getBestCourses(userId);
+        List<CourseOverviewResponseDto> bests = getBestCourses(userId, now);
 
         // 조회
         List<CourseOverviewResponseDto> courses = courseCustomRepository.searchCourseList(userId,
@@ -257,8 +262,8 @@ public class CourseService {
         return new CourseListResponseDto(bests, returnCourses, nextCursor, isLast);
     }
 
-    public List<CourseOverviewResponseDto> getBestCourses(Long userId) {
-        return courseCustomRepository.findBestThreeCourses(userId);
+    public List<CourseOverviewResponseDto> getBestCourses(Long userId, LocalDate now) {
+        return courseCustomRepository.findBestThreeCourses(userId, now);
     }
 
     public CourseSimpleListWithTagResponseDto getWrittenCourses(User user,

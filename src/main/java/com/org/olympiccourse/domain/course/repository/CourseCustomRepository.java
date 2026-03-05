@@ -4,11 +4,12 @@ import com.org.olympiccourse.domain.course.request.CourseSearchCond;
 import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
 import com.org.olympiccourse.domain.course.response.CourseOverviewTagResponseDto;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CourseCustomRepository {
 
-    List<CourseOverviewResponseDto> findBestThreeCourses(Long userId);
+    List<CourseOverviewResponseDto> findBestThreeCourses(Long userId, LocalDate now);
 
     List<CourseOverviewResponseDto> searchCourseList(Long id, CourseSearchCond condition, int size);
 

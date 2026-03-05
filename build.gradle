@@ -61,8 +61,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation "org.testcontainers:junit-jupiter:1.17.2"
-    testImplementation "org.testcontainers:mysql:1.17.2"
+    testImplementation "org.testcontainers:junit-jupiter:1.20.4"
+    testImplementation "org.testcontainers:mysql"
+    testRuntimeOnly "com.mysql:mysql-connector-j:8.4.0"
 
     // aws
     implementation platform("software.amazon.awssdk:bom:2.31.70")

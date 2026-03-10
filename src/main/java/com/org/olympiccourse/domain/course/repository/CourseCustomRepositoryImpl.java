@@ -11,11 +11,17 @@ import com.org.olympiccourse.domain.course.request.MyCourseVisibility;
 import com.org.olympiccourse.domain.course.response.CourseOverviewResponseDto;
 import com.org.olympiccourse.domain.course.response.CourseOverviewTagResponseDto;
 import com.org.olympiccourse.domain.tag.entity.Tag;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -26,29 +32,38 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
-    public List<CourseOverviewResponseDto> findBestThreeCourses(Long userId) {
+    public List<CourseOverviewResponseDto> findBestThreeCourses(Long userId, LocalDate now) {
 
-        NumberExpression likeCount = getLikeCount();
+        LocalDateTime start = now.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime end = now.plusMonths(1).withDayOfMonth(1).atStartOfDay();
 
-        BooleanExpression likedExpr = userId == null ? Expressions.FALSE :
-            Expressions.booleanTemplate(
-                "sum(case when {0} = {1} then 1 else 0 end) > 0",
-                courseLike.user.id, userId
+        // 좋아요 개수
+        Expression<Long> likeCount = courseLike.id.count();
+
+        // 대표사진
+        Expression<String> thumbnail = JPAExpressions.select(coursePhoto.path.max())
+            .from(coursePhoto)
+            .join(coursePhoto.courseStep, courseStep)
+            .where(
+                courseStep.course.eq(course)
+                    .and(coursePhoto.isRep.isTrue())
             );
 
+        // 사용자의 좋아요 여부
+        BooleanExpression likedExpr = getLikedExpr(userId);
+
         return jpaQueryFactory.select(Projections.constructor(CourseOverviewResponseDto.class,
-                course.id, coursePhoto.path.max(), course.titleKo, course.user.nickname, likeCount,
+                course.id, thumbnail, course.titleKo, course.user.nickname, likeCount,
                 likedExpr))
             .from(course)
-            .join(courseStep).on(courseStep.course.eq(course))
-            .leftJoin(coursePhoto).on(coursePhoto.courseStep.eq(courseStep)
-                .and(coursePhoto.isRep.isTrue()))
-            .leftJoin(courseLike).on(courseLike.course.eq(course))
-            .where(course.secret.isFalse())
-            .groupBy(course.id)
-            .orderBy(likeCount.desc(), course.id.desc())
+            .join(courseLike).on(courseLike.course.eq(course))
+            .where(course.secret.isFalse(),
+                course.createdAt.goe(start),
+                course.createdAt.lt(end)
+                )
+            .groupBy(course.id, course.titleKo, course.user.nickname)
+            .orderBy(new OrderSpecifier<>(Order.DESC, likeCount), course.id.desc())
             .limit(3)
             .fetch();
     }
@@ -79,16 +94,15 @@ public class CourseCustomRepositoryImpl implements CourseCustomRepository {
 
     private BooleanExpression getLikedExpr(Long userId) {
         BooleanExpression likedExpr = (userId == null) ? Expressions.FALSE :
-            Expressions.booleanTemplate(
-                "sum(case when {0} = {1} then 1 else 0 end) > 0",
-                courseLike.user.id, userId
-            );
+            new CaseBuilder().when(courseLike.user.id.eq(userId)).then(1)
+                .otherwise(0).sum().gt(0);
         return likedExpr;
     }
 
-    private NumberExpression getLikeCount() {
-        NumberExpression likeCount = courseLike.id.countDistinct();
-        return likeCount;
+    private Expression<Long> getLikeCount() {
+        return JPAExpressions.select(courseLike.id.count())
+            .from(courseLike)
+            .where(courseLike.course.eq(course));
     }
 
     @Override

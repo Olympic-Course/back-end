@@ -50,8 +50,9 @@ public class HomeService {
             .build();
 
         Long userId = (user != null) ? user.getId() : null;
-        HomeEventResponse eventData = eventService.getEventData(LocalDate.now(clock));
-        List<CourseOverviewResponseDto> bestCourses = courseService.getBestCourses(userId);
+        LocalDate now = LocalDate.now(clock);
+        HomeEventResponse eventData = eventService.getEventData(now);
+        List<CourseOverviewResponseDto> bestCourses = courseService.getBestCourses(userId, now);
         return new HomeResponse(weatherIntegrationData, eventData, bestCourses);
 
     }

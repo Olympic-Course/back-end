@@ -1,6 +1,5 @@
 <div align = "center">
-<a href = "https://olympic-course.vercel.app" target="_blank"><img width="2048" height="1546" alt="image" src="https://github.com/user-attachments/assets/e937a3cf-f0d2-42dd-b152-bceb9852f9e1" /></a>
-<em>(위 이미지를 클릭하면, 올코 사이트로 이동합니다.)</em>
+<img width="2048" height="1546" alt="image" src="https://github.com/user-attachments/assets/e937a3cf-f0d2-42dd-b152-bceb9852f9e1" />
 </div>
 
 

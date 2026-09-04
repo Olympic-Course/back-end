@@ -46,7 +46,6 @@ public class JwtService {
         }
 
         if (jwtUtil.checkBlacklist(extractAccessToken)) {
-            logout(accessToken);
             throw new CustomException(GlobalErrorCode.BAD_REQUEST);
         }
 
@@ -54,7 +53,7 @@ public class JwtService {
 
         String existingRefreshToken = refreshTokenRepository.findByUserId(
             userIdFromRefreshToken);
-        if (existingRefreshToken == null) {
+        if (existingRefreshToken == null || !existingRefreshToken.equals(refreshToken)) {
             throw new CustomException(AuthResponseCode.UNAUTHORIZED);
         }
 
